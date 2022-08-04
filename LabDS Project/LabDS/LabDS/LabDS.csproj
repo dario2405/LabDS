@@ -131,6 +131,7 @@
     <Compile Include="Models\Analysis.cs" />
     <Compile Include="Models\AnalysisCategory.cs" />
     <Compile Include="Models\Person.cs" />
+    <Compile Include="Models\Requests\LoginRequestModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
