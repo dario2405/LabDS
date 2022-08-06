@@ -1,4 +1,6 @@
-﻿using System;
+﻿using LabDS.App_Start;
+using LabDS.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,77 +10,116 @@ namespace LabDS.Controllers
 {
     public class AnalysisCategoryController : Controller
     {
-        // GET: AnalysisCategory
-        public ActionResult Index()
+        public ActionResult List()
         {
-            return View();
+            var categories = AnalysisCategory.ListCategories();
+            return View(categories);
         }
-
-        // GET: AnalysisCategory/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            var category = AnalysisCategory.GetById(id);
+            return View(category);
         }
 
-        // GET: AnalysisCategory/Create
-        public ActionResult Create()
+        [HttpGet]
+        public ActionResult Insert()
         {
-            return View();
+            if (Utils.IsAdmin(Session))
+            {
+                return View(new AnalysisCategory());
+            }
+            else
+                return RedirectToAction("Login", "Person");
         }
 
-        // POST: AnalysisCategory/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult Insert(AnalysisCategory model)
         {
             try
             {
-                // TODO: Add insert logic here
-
-                return RedirectToAction("Index");
+                if (Utils.IsAdmin(Session))
+                {
+                    var dbCategory = AnalysisCategory.GetByName(model.Name);
+                    if (dbCategory != null)
+                    {
+                        ModelState.AddModelError("Name", "Ekziston  nje tjeter kategori me kete emer.");
+                        return View(model);
+                    }
+                    else
+                    {
+                        if (AnalysisCategory.Insert(model))
+                        {
+                            return RedirectToAction("List");
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("Name", "Nuk u shtua dot!");
+                            return View(model);
+                        }
+                    }
+                   
+                }
+                else
+                    return RedirectToAction("Login", "Person");
             }
             catch
             {
-                return View();
+                return RedirectToAction("List");
             }
         }
 
-        // GET: AnalysisCategory/Edit/5
+        [HttpGet]
         public ActionResult Edit(int id)
         {
-            return View();
+            var category = AnalysisCategory.GetById(id);
+            return View(category);
         }
 
-        // POST: AnalysisCategory/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Edit(int id, AnalysisCategory category)
         {
             try
             {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
+                if (Utils.IsAdmin(Session))
+                {
+                    if (AnalysisCategory.Edit(category))
+                        return RedirectToAction("List");
+                    else
+                        return View(category);
+                }
+                else
+                    return RedirectToAction("Login", "Person");
             }
             catch
             {
-                return View();
+                return View(category);
             }
         }
 
-        // GET: AnalysisCategory/Delete/5
+        [HttpGet]
         public ActionResult Delete(int id)
         {
-            return View();
+            var category = AnalysisCategory.GetById(id);
+            return View(category);
         }
 
-        // POST: AnalysisCategory/Delete/5
+        
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public ActionResult Delete(int id, AnalysisCategory category)
         {
             try
             {
-                // TODO: Add delete logic here
+                if (Utils.IsAdmin(Session))
+                {
+                    if (AnalysisCategory.Delete(category))
+                    {
+                        return RedirectToAction("List");
+                    }
+                    else return View(category);
 
-                return RedirectToAction("Index");
+                }
+                else
+                    return RedirectToAction("Login", "Person");
             }
             catch
             {

@@ -1,4 +1,7 @@
-﻿using System;
+﻿using LabDS.App_Start;
+using LabDS.Models;
+using LabDS.Models.Requests;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -9,80 +12,132 @@ namespace LabDS.Controllers
     public class AnalysisController : Controller
     {
         // GET: Analysis
-        public ActionResult Index()
+        public ActionResult List()
         {
-            return View();
+            var analyzes = Analysis.ListAnalyzes();
+            return View(analyzes);
         }
 
-        // GET: Analysis/Details/5
+        [HttpGet]
         public ActionResult Details(int id)
         {
-            return View();
+            var analysis = Analysis.GetById(id);
+            return View(analysis);
         }
 
-        // GET: Analysis/Create
-        public ActionResult Create()
+        [HttpGet]
+        public ActionResult Insert()
         {
-            return View();
+            if (Utils.IsAdmin(Session))
+            {
+                var categories = AnalysisCategory.ListCategories();
+                ViewData["Categories"] = categories;
+                return View(new AnalysisAddRequest());
+            }
+            else
+            {
+                return RedirectToAction("Login", "Person");
+            }
         }
 
-        // POST: Analysis/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult Insert(AnalysisAddRequest model)
         {
             try
             {
-                // TODO: Add insert logic here
-
-                return RedirectToAction("Index");
+                if (Utils.IsAdmin(Session))
+                {
+                    var dbProduct = Analysis.GetByName(model.Name);
+                    if (dbProduct != null)
+                    {
+                        ModelState.AddModelError("Name", "Ekziston nje tjeter analize me kete emer");
+                        return View(model);
+                    }
+                    if (Analysis.Insert(model))
+                        return RedirectToAction("List");
+                    return View(model);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Person");
+                }
             }
             catch
             {
-                return View();
+                return View(model);
             }
         }
 
-        // GET: Analysis/Edit/5
+        [HttpGet]
         public ActionResult Edit(int id)
         {
-            return View();
+            if (Utils.IsAdmin(Session))
+            {
+                var categories = AnalysisCategory.ListCategories();
+                ViewData["Categories"] = categories;
+                var analysis = Analysis.GetById(id);
+                return View(analysis);
+            }
+            else
+                return RedirectToAction("Login", "Person");
+            
         }
 
-        // POST: Analysis/Edit/5
+        
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Edit(int id, Analysis model)
         {
             try
             {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
+                if (Utils.IsAdmin(Session))
+                {
+                    if (Analysis.Edit(model))
+                    {
+                        return RedirectToAction("List");
+                    }
+                    else
+                        return View(model);
+                }
+                return RedirectToAction("Login", "Person");
             }
             catch
             {
-                return View();
+                return View(model);
             }
         }
 
-        // GET: Analysis/Delete/5
+        [HttpGet]
         public ActionResult Delete(int id)
         {
-            return View();
+            if (Utils.IsAdmin(Session))
+            {
+                var analysis = Analysis.GetById(id);
+                return View(analysis);
+            }
+            else
+                return RedirectToAction("Login", "Person");
         }
 
-        // POST: Analysis/Delete/5
+        
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public ActionResult Delete(int id, Analysis model)
         {
             try
             {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
+                if (Utils.IsAdmin(Session))
+                {
+                    if (Analysis.Delete(model))
+                    {
+                        return RedirectToAction("List");
+                    }
+                    else
+                        return View(model);
+                }
+                return RedirectToAction("Login", "Person");
             }
             catch
             {
-                return View();
+                return View(model);
             }
         }
     }

@@ -2,8 +2,12 @@
   "ExpandedNodes": [
     "",
     "\\LabDS Project",
-    "\\LabDS Project\\LabDS"
+    "\\LabDS Project\\LabDS",
+    "\\LabDS Project\\LabDS\\LabDS",
+    "\\LabDS Project\\LabDS\\LabDS\\Models",
+    "\\LabDS Project\\LabDS\\LabDS\\Views",
+    "\\LabDS Project\\LabDS\\LabDS\\Views\\Shared"
   ],
-  "SelectedNode": "\\LabDS Project",
+  "SelectedNode": "\\LabDS Project\\LabDS\\LabDS\\Views\\Shared\\_Layout.cshtml",
   "PreviewInSolutionExplorer": false
 }

@@ -16,7 +16,7 @@ namespace LabDS.Models
             {
                 using (SqlConnection con = new SqlConnection(Utils.DB_CONNECTION_STRING))
                 {
-                    using (SqlCommand cmd = new SqlCommand("select Id from ProductCategories where Name = @name", con))
+                    using (SqlCommand cmd = new SqlCommand("select Id from AnalysisCategories where Name = @name", con))
                     {
 
                         cmd.CommandType = System.Data.CommandType.Text;
@@ -45,7 +45,7 @@ namespace LabDS.Models
             {
                 using (SqlConnection con = new SqlConnection(Utils.DB_CONNECTION_STRING))
                 {
-                    using (SqlCommand cmd = new SqlCommand("select * from ProductCategories where Id = @id and IsDeleted = 0", con))
+                    using (SqlCommand cmd = new SqlCommand("select * from AnalysisCategories where Id = @id", con))
                     {
                         cmd.CommandType = System.Data.CommandType.Text;
                         cmd.Parameters.Add(new SqlParameter("id", @id));
@@ -73,14 +73,13 @@ namespace LabDS.Models
             {
                 using (SqlConnection con = new SqlConnection(Utils.DB_CONNECTION_STRING))
                 {
-                    using (SqlCommand cmd = new SqlCommand("insert into ProductCategories (Name) values(@Name)", con)
-                                                        )
+                    using (SqlCommand cmd = new SqlCommand("insert into AnalysisCategories (Name) values (@Name)", con))
+
                     {
                         cmd.CommandType = System.Data.CommandType.Text;
                         cmd.Parameters.Add(new SqlParameter("@Name", model.Name));
-                        con.Open();
-                        if (cmd.ExecuteNonQuery() > 0)
-                            return true;
+                        con.Open();                        
+                        return cmd.ExecuteNonQuery() == 1;
                         con.Close();
                     }
                 }
@@ -98,7 +97,7 @@ namespace LabDS.Models
             {
                 using (SqlConnection con = new SqlConnection(Utils.DB_CONNECTION_STRING))
                 {
-                    using (SqlCommand cmd = new SqlCommand("select * from ProductCategories order by Id desc", con))
+                    using (SqlCommand cmd = new SqlCommand("select * from AnalysisCategories order by Id desc", con))
                     {
                         cmd.CommandType = System.Data.CommandType.Text;
                         con.Open();
@@ -126,7 +125,7 @@ namespace LabDS.Models
                 using (SqlConnection con = new SqlConnection(Utils.DB_CONNECTION_STRING))
                 {
                     using (SqlCommand cmd = new SqlCommand(@"update 
-                                                             ProductCategories
+                                                             AnalysisCategories
                                                              set 
                                                              Name = @Name
                                                              where Id = @Id

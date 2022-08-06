@@ -2,6 +2,7 @@
 using LabDS.Models.Requests;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
@@ -23,12 +24,17 @@ namespace LabDS.Models
     public class Person
     {
         public int Id { get; set; }
+        [Required]
         public string Name { get; set; }
+        [Required]
         public string Surname { get; set; }
+        [Required]
+        [DataType(DataType.Date)]
         public DateTime BirthDate { get; set; }
         public string Username { get; set; }
+        [Required, DataType(DataType.Password), MinLength(8)]
         public string Password { get; set; }
-        public int PhoneNO { get; set; }
+        public string PhoneNO { get; set; }
         public RoleType Role { get; set; }
         public GenderType Gender { get; set; }
         public static bool Register(Person person)
@@ -38,7 +44,7 @@ namespace LabDS.Models
                 using (SqlConnection con = new SqlConnection(Utils.DB_CONNECTION_STRING))
                 {
                     using (SqlCommand cmd = new SqlCommand(@"insert into persons(Name, Surname, Username, Password, Birthdate, PhoneNO, Role, Gender)
-                                                            values(@name, @surname, @username, @password, @birthdate, @PhoneNO, @role, @Gender)", con))
+                                                            values(@name, @surname, @username, @password, @birthdate, @PhoneNO, 1, 1)", con))
                     {
                         cmd.CommandType = System.Data.CommandType.Text;
                         cmd.Parameters.Add(new SqlParameter("name", person.Name));
@@ -48,7 +54,7 @@ namespace LabDS.Models
                         cmd.Parameters.Add(new SqlParameter("birthdate", person.BirthDate));
                         cmd.Parameters.Add(new SqlParameter("PhoneNO", person.PhoneNO));
                         cmd.Parameters.Add(new SqlParameter("role", RoleType.Admin));
-                        cmd.Parameters.Add(new SqlParameter("Gender", person.Gender));
+                        cmd.Parameters.Add(new SqlParameter("Gender", GenderType.Male));
                         con.Open();
                         return cmd.ExecuteNonQuery() == 1;
 
@@ -122,7 +128,7 @@ namespace LabDS.Models
                                 Name = (string)reader["Name"],
                                 Surname = (string)reader["Surname"],
                                 Password = (string)reader["Password"],
-                                PhoneNO = (int)reader["PhoneNO"]
+                                PhoneNO = (string)reader["PhoneNO"]
                             };
                         }
                         con.Close();
@@ -159,7 +165,7 @@ namespace LabDS.Models
                                 BirthDate = (DateTime)reader["BirthDate"],
                                 Name = (string)reader["Name"],
                                 Surname = (string)reader["Surname"],
-                                PhoneNO = (int)reader["PhoneNO"]
+                                PhoneNO = (string)reader["PhoneNO"]
                             };
                         }
                         con.Close();

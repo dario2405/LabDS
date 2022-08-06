@@ -14,8 +14,8 @@ namespace LabDS.Models
         public int CategoryId { get; set; }
         public AnalysisCategory Category { get; set; }
         public double Price { get; set; }
-        public double Value { get; set; }
         public string Range { get; set; }
+        public string Unit { get; set; }
         internal static Analysis GetByName(string name)
         {
             Analysis res = null;
@@ -23,7 +23,7 @@ namespace LabDS.Models
             {
                 using (SqlConnection con = new SqlConnection(Utils.DB_CONNECTION_STRING))
                 {
-                    using (SqlCommand cmd = new SqlCommand("select Id from Products where Name = @name", con))
+                    using (SqlCommand cmd = new SqlCommand("select Id from Analyzes where Name = @name", con))
                     {
                         cmd.Parameters.Add(new SqlParameter("name", name));
                         cmd.CommandType = System.Data.CommandType.Text;
@@ -51,7 +51,11 @@ namespace LabDS.Models
             {
                 using (SqlConnection con = new SqlConnection(Utils.DB_CONNECTION_STRING))
                 {
-                    using (SqlCommand cmd = new SqlCommand("select * from Products where Id = @id", con))
+                    using (SqlCommand cmd = new SqlCommand(@"select a.*,ac.Name Category 
+                                                             from Analyzes a inner
+                                                             join AnalysisCategories ac
+                                                             on a.CategoryId = ac.Id
+                                                             where a.Id = @id", con))
                     {
                         cmd.CommandType = System.Data.CommandType.Text;
                         cmd.Parameters.Add(new SqlParameter("id", @id));
@@ -64,8 +68,12 @@ namespace LabDS.Models
                                 Id = (int)reader["Id"],
                                 Name = (string)reader["Name"],
                                 Price = (double)reader["Price"],
-                                CategoryId = (int)reader["CategoryId"],
-                                Range = (string)reader["Range"]
+                                Category = new AnalysisCategory()
+                                {
+                                    Name = (string)reader["Category"]
+                                },
+                                Range = (string)reader["Range"],
+                                Unit = (string)reader["Unit"]
                             };
                         }
                         con.Close();
@@ -76,22 +84,21 @@ namespace LabDS.Models
 
             return result;
         }
-        public static bool Insert(Requests.ProductAddRequest model)
+        public static bool Insert(Requests.AnalysisAddRequest model)
         {
             try
             {
                 using (SqlConnection con = new SqlConnection(Utils.DB_CONNECTION_STRING))
                 {
-                    using (SqlCommand cmd = new SqlCommand(@"insert into Products (Name, Price, ProductCategoryId, Quantity, IsDeleted)
-                                                        values(@Name, @Price, @ProductCategoryId,@Quantity, 0)
+                    using (SqlCommand cmd = new SqlCommand(@"insert into Analyzes (Name, Price, CategoryId, Range)
+                                                        values(@Name, @Price, @CategoryId,@Range)
                                                         ", con))
                     {
                         cmd.CommandType = System.Data.CommandType.Text;
                         cmd.Parameters.Add(new SqlParameter("@Name", model.Name));
                         cmd.Parameters.Add(new SqlParameter("@Price", model.Price));
-                        cmd.Parameters.Add(new SqlParameter("@ProductCategoryId", model.ProductCategoryId));
-                        cmd.Parameters.Add(new SqlParameter("@Quantity", model.Quantity));
-                        cmd.Parameters.Add(new SqlParameter("@IsDeleted", false));
+                        cmd.Parameters.Add(new SqlParameter("@CategoryId", model.CategoryId));
+                        cmd.Parameters.Add(new SqlParameter("@Range", model.Range));
                         con.Open();
                         if (cmd.ExecuteNonQuery() > 0)
                             return true;
@@ -102,36 +109,37 @@ namespace LabDS.Models
             catch (Exception ex) { }
             return false;
         }
-        internal static List<Analysis> ListProducts()
+        internal static List<Analysis> ListAnalyzes()
         {
             List<Analysis> result = new List<Analysis>();
             try
             {
                 using (SqlConnection con = new SqlConnection(Utils.DB_CONNECTION_STRING))
                 {
-                    using (SqlCommand cmd = new SqlCommand(@"select p.*,pc.Name Category 
-                                                             from Products p inner join ProductCategories pc 
-                                                             on p.ProductCategoryId=pc.Id 
-                                                             where p.IsDeleted = 0 and pc.IsDeleted = 0", con))
+                    using (SqlCommand cmd = new SqlCommand(@"select a.*,ac.Name Category 
+                                                             from Analyzes a inner join AnalysisCategories ac 
+                                                             on a.CategoryId=ac.Id 
+                                                            ", con))
                     {
                         cmd.CommandType = System.Data.CommandType.Text;
                         con.Open();
                         var reader = cmd.ExecuteReader();
                         while (reader.Read())
                         {
-                            var product = new Product()
+                            var analysis = new Analysis()
                             {
                                 Id = (int)reader["Id"],
                                 Name = (string)reader["Name"],
                                 Price = (double)reader["Price"],
-                                ProductCategory = new ProductCategory()
+                                Category = new AnalysisCategory()
                                 {
                                     Name = (string)reader["Category"]
                                 },
-                                Quantity = (double)reader["Quantity"]
+                                Range = (string)reader["Range"],
+                                Unit = (string)reader["Unit"]
                             };
 
-                            result.Add(product);
+                            result.Add(analysis);
                         }
                         con.Close();
                     }
@@ -140,28 +148,30 @@ namespace LabDS.Models
             catch (Exception ex) { }
             return result;
         }
-        internal static bool Edit(Product product)
+        internal static bool Edit(Analysis analysis)
         {
             try
             {
                 using (SqlConnection con = new SqlConnection(Utils.DB_CONNECTION_STRING))
                 {
                     using (SqlCommand cmd = new SqlCommand(@"update 
-                                                             products
+                                                             analyzes
                                                              set 
                                                              Name = @Name, 
                                                              Price = @Price, 
-                                                             ProductCategoryId = @ProductCategoryId, 
-                                                             Quantity = @Quantity
+                                                             CategoryId = @CategoryId, 
+                                                             Range = @Range,
+                                                             Unit = @Unit
                                                              where Id = @Id
                                                              ", con))
                     {
                         cmd.CommandType = System.Data.CommandType.Text;
-                        cmd.Parameters.Add(new SqlParameter("Id", product.Id));
-                        cmd.Parameters.Add(new SqlParameter("Name", product.Name));
-                        cmd.Parameters.Add(new SqlParameter("Price", product.Price));
-                        cmd.Parameters.Add(new SqlParameter("ProductCategoryId", product.ProductCategoryId));
-                        cmd.Parameters.Add(new SqlParameter("Quantity", product.Quantity));
+                        cmd.Parameters.Add(new SqlParameter("Id", analysis.Id));
+                        cmd.Parameters.Add(new SqlParameter("Name", analysis.Name));
+                        cmd.Parameters.Add(new SqlParameter("Price", analysis.Price));
+                        cmd.Parameters.Add(new SqlParameter("CategoryId", analysis.CategoryId));
+                        cmd.Parameters.Add(new SqlParameter("Range", analysis.Range));
+                        cmd.Parameters.Add(new SqlParameter("Unit", analysis.Unit));
                         con.Open();
                         return cmd.ExecuteNonQuery() == 1;
                     }
@@ -173,17 +183,16 @@ namespace LabDS.Models
             }
             return false;
         }
-        internal static bool Delete(Product product)
+        internal static bool Delete(Analysis analysis)
         {
             try
             {
                 using (SqlConnection con = new SqlConnection(Utils.DB_CONNECTION_STRING))
                 {
-                    using (SqlCommand cmd = new SqlCommand("Update products set IsDeleted = 1 where Id = @id", con))
+                    using (SqlCommand cmd = new SqlCommand("Delete analyzes where Id = @id", con))
                     {
                         cmd.CommandType = System.Data.CommandType.Text;
-                        cmd.Parameters.Add(new SqlParameter("Id", product.Id));
-                        cmd.Parameters.Add(new SqlParameter("IsDeleted", true));
+                        cmd.Parameters.Add(new SqlParameter("Id", analysis.Id));
                         con.Open();
                         return cmd.ExecuteNonQuery() == 1;
                     }

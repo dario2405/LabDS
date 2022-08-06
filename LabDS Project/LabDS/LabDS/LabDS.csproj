@@ -124,13 +124,16 @@
     <Compile Include="Controllers\AnalysisCategoryController.cs" />
     <Compile Include="Controllers\AnalysisController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\PersonController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Analysis.cs" />
     <Compile Include="Models\AnalysisCategory.cs" />
     <Compile Include="Models\Person.cs" />
+    <Compile Include="Models\Requests\AnalysisAddRequest.cs" />
     <Compile Include="Models\Requests\LoginRequestModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -170,12 +173,24 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\AnalysisCategory\List.cshtml" />
+    <Content Include="Views\AnalysisCategory\Details.cshtml" />
+    <Content Include="Views\AnalysisCategory\Insert.cshtml" />
+    <Content Include="Views\AnalysisCategory\Edit.cshtml" />
+    <Content Include="Views\AnalysisCategory\Delete.cshtml" />
+    <Content Include="Views\Analysis\Details.cshtml" />
+    <Content Include="Views\Analysis\Insert.cshtml" />
+    <Content Include="Views\Analysis\Edit.cshtml" />
+    <Content Include="Views\Analysis\Delete.cshtml" />
+    <Content Include="Views\Person\Register.cshtml" />
+    <Content Include="Views\Person\Login.cshtml" />
+    <Content Include="Views\Shared\Plain.cshtml" />
+    <Content Include="Views\Admin\Profile.cshtml" />
+    <Content Include="Views\User\Profile.cshtml" />
+    <Content Include="Views\Analysis\List.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\AnalysisCategory\" />
-    <Folder Include="Views\Analysis\" />
-    <Folder Include="Views\Person\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
