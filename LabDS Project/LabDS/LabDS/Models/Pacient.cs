@@ -1,5 +1,4 @@
 ﻿using LabDS.App_Start;
-using LabDS.Models.Requests;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -9,13 +8,7 @@ using System.Web;
 
 namespace LabDS.Models
 {
-    public enum RoleType : byte
-    {
-        NONE = 0,
-        Admin = 1,
-        User = 2
-    }
-    public class Person
+    public class Pacient
     {
         public int Id { get; set; }
         [Required]
@@ -25,29 +18,25 @@ namespace LabDS.Models
         [Required]
         [DataType(DataType.Date)]
         public DateTime BirthDate { get; set; }
-        public string Username { get; set; }
-        [Required, DataType(DataType.Password), MinLength(8)]
-        public string Password { get; set; }
+        [Required]
         public string PhoneNO { get; set; }
-        public RoleType Role { get; set; }
+        [Required(ErrorMessage = "Zgjidhni gjinine e pacientit")]
         public string Gender { get; set; }
-        public static bool Register(Person person)
+        public List<PacientAnalysis> Analyzes { get; set; }
+        public static bool AddPacient(Pacient person)
         {
             try
             {
                 using (SqlConnection con = new SqlConnection(Utils.DB_CONNECTION_STRING))
                 {
-                    using (SqlCommand cmd = new SqlCommand(@"insert into persons(Name, Surname, Username, Password, Birthdate, PhoneNO, Role, Gender)
-                                                            values(@name, @surname, @username, @password, @birthdate, @PhoneNO, 2, @gender)", con))
+                    using (SqlCommand cmd = new SqlCommand(@"insert into pacients(Name, Surname, Birthdate, PhoneNO, Gender)
+                                                            values(@name, @surname, @birthdate, @PhoneNO, @gender)", con))
                     {
                         cmd.CommandType = System.Data.CommandType.Text;
                         cmd.Parameters.Add(new SqlParameter("name", person.Name));
                         cmd.Parameters.Add(new SqlParameter("surname", person.Surname));
-                        cmd.Parameters.Add(new SqlParameter("username", person.Username));
-                        cmd.Parameters.Add(new SqlParameter("password", person.Password));
                         cmd.Parameters.Add(new SqlParameter("birthdate", person.BirthDate));
                         cmd.Parameters.Add(new SqlParameter("PhoneNO", person.PhoneNO));
-                        cmd.Parameters.Add(new SqlParameter("role", RoleType.User));
                         cmd.Parameters.Add(new SqlParameter("Gender", person.Gender));
                         con.Open();
                         return cmd.ExecuteNonQuery() == 1;
@@ -63,65 +52,55 @@ namespace LabDS.Models
             }
             return false;
         }
-
-        internal static Person Login(LoginRequestModel model)
+        internal static Pacient GetLast()
         {
-            Person result = null;
-
+            Pacient res = null;
             try
             {
                 using (SqlConnection con = new SqlConnection(Utils.DB_CONNECTION_STRING))
                 {
-                    using (SqlCommand cmd = new SqlCommand("select * from Persons where Username = @username and Password = @password", con))
+                    using (SqlCommand cmd = new SqlCommand("select top 1 * from Pacients order by Id desc", con))
                     {
+
                         cmd.CommandType = System.Data.CommandType.Text;
-                        cmd.Parameters.Add(new SqlParameter("username", model.Username));
-                        cmd.Parameters.Add(new SqlParameter("password", model.Password));
                         con.Open();
                         var reader = cmd.ExecuteReader();
                         while (reader.Read())
                         {
-                            result = new Person()
+                            res = new Pacient()
                             {
-                                Username = (string)reader["Username"],
-                                Role = (RoleType)reader["Role"]
+                                Id = (int)reader["Id"]
                             };
                         }
                         con.Close();
                     }
                 }
             }
-            catch (Exception ex)
-            {
-
-            }
-
-            return result;
+            catch (Exception ex) { }
+            return res;
         }
-        internal static Person GetByUsername(string username)
+        internal static Pacient GetByName(string name)
         {
-            Person result = null;
+            Pacient result = null;
 
             try
             {
                 using (SqlConnection con = new SqlConnection(Utils.DB_CONNECTION_STRING))
                 {
-                    using (SqlCommand cmd = new SqlCommand("select * from Persons where Username = @username", con))
+                    using (SqlCommand cmd = new SqlCommand("select * from Pacients where Name = @name", con))
                     {
                         cmd.CommandType = System.Data.CommandType.Text;
-                        cmd.Parameters.Add(new SqlParameter("username", @username));
+                        cmd.Parameters.Add(new SqlParameter("name", @name));
                         con.Open();
                         var reader = cmd.ExecuteReader();
                         while (reader.Read())
                         {
-                            result = new Person()
+                            result = new Pacient()
                             {
                                 Id = (int)reader["Id"],
-                                Username = (string)reader["Username"],
                                 BirthDate = (DateTime)reader["BirthDate"],
                                 Name = (string)reader["Name"],
                                 Surname = (string)reader["Surname"],
-                                Password = (string)reader["Password"],
                                 PhoneNO = (string)reader["PhoneNO"],
                                 Gender = (string)reader["Gender"]
                             };
@@ -137,14 +116,52 @@ namespace LabDS.Models
 
             return result;
         }
-        internal static Person GetById(int id)
+        internal static Pacient GetByFullName(string name, string surname)
         {
-            Person result = null;
+            Pacient result = null;
+
             try
             {
                 using (SqlConnection con = new SqlConnection(Utils.DB_CONNECTION_STRING))
                 {
-                    using (SqlCommand cmd = new SqlCommand("select * from Persons where Id = @id", con))
+                    using (SqlCommand cmd = new SqlCommand("select * from Pacients where Name = @name and Surname = @surname", con))
+                    {
+                        cmd.CommandType = System.Data.CommandType.Text;
+                        cmd.Parameters.Add(new SqlParameter("name", @name));
+                        cmd.Parameters.Add(new SqlParameter("surname", @surname));
+                        con.Open();
+                        var reader = cmd.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            result = new Pacient()
+                            {
+                                Id = (int)reader["Id"],
+                                BirthDate = (DateTime)reader["BirthDate"],
+                                Name = (string)reader["Name"],
+                                Surname = (string)reader["Surname"],
+                                PhoneNO = (string)reader["PhoneNO"],
+                                Gender = (string)reader["Gender"]
+                            };
+                        }
+                        con.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return result;
+        }
+        internal static Pacient GetById(int id)
+        {
+            Pacient result = null;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(Utils.DB_CONNECTION_STRING))
+                {
+                    using (SqlCommand cmd = new SqlCommand("select * from pacients where Id = @id", con))
                     {
                         cmd.CommandType = System.Data.CommandType.Text;
                         cmd.Parameters.Add(new SqlParameter("id", @id));
@@ -152,11 +169,9 @@ namespace LabDS.Models
                         var reader = cmd.ExecuteReader();
                         while (reader.Read())
                         {
-                            result = new Person()
+                            result = new Pacient()
                             {
                                 Id = (int)reader["Id"],
-                                Username = (string)reader["Username"],
-                                Password = (string)reader["Password"],
                                 BirthDate = (DateTime)reader["BirthDate"],
                                 Name = (string)reader["Name"],
                                 Surname = (string)reader["Surname"],
@@ -175,19 +190,17 @@ namespace LabDS.Models
 
             return result;
         }
-        internal static bool Edit(Person person)
+        internal static bool EditPacient(Pacient pacient)
         {
             try
             {
                 using (SqlConnection con = new SqlConnection(Utils.DB_CONNECTION_STRING))
                 {
                     using (SqlCommand cmd = new SqlCommand(@"update 
-                                                             persons
+                                                             pacients
                                                              set 
                                                              Name = @Name, 
                                                              Surname = @Surname, 
-                                                             Username = @Username, 
-                                                             Password = @Password, 
                                                              Birthdate = @Birthdate,
                                                              PhoneNO = @PhoneNO,
                                                              Gender = @Gender
@@ -195,14 +208,12 @@ namespace LabDS.Models
                                                              ", con))
                     {
                         cmd.CommandType = System.Data.CommandType.Text;
-                        cmd.Parameters.Add(new SqlParameter("id", person.Id));
-                        cmd.Parameters.Add(new SqlParameter("name", person.Name));
-                        cmd.Parameters.Add(new SqlParameter("surname", person.Surname));
-                        cmd.Parameters.Add(new SqlParameter("username", person.Username));
-                        cmd.Parameters.Add(new SqlParameter("password", person.Password));
-                        cmd.Parameters.Add(new SqlParameter("birthdate", person.BirthDate));
-                        cmd.Parameters.Add(new SqlParameter("phoneno", person.PhoneNO));
-                        cmd.Parameters.Add(new SqlParameter("gender", person.Gender));
+                        cmd.Parameters.Add(new SqlParameter("id", pacient.Id));
+                        cmd.Parameters.Add(new SqlParameter("name", pacient.Name));
+                        cmd.Parameters.Add(new SqlParameter("surname", pacient.Surname));
+                        cmd.Parameters.Add(new SqlParameter("birthdate", pacient.BirthDate));
+                        cmd.Parameters.Add(new SqlParameter("phoneno", pacient.PhoneNO));
+                        cmd.Parameters.Add(new SqlParameter("gender", pacient.Gender));
                         con.Open();
                         return cmd.ExecuteNonQuery() == 1;
                     }
@@ -215,31 +226,27 @@ namespace LabDS.Models
             }
             return false;
         }
-        internal static List<Person> ListUsers()
+        internal static List<Pacient> ListPacients()
         {
-            List<Person> result = new List<Person>();
+            List<Pacient> result = new List<Pacient>();
             try
             {
                 using (SqlConnection con = new SqlConnection(Utils.DB_CONNECTION_STRING))
                 {
-                    using (SqlCommand cmd = new SqlCommand("select * from Persons where role = 2 ", con))
+                    using (SqlCommand cmd = new SqlCommand("select * from pacients", con))
                     {
                         cmd.CommandType = System.Data.CommandType.Text;
                         con.Open();
                         var reader = cmd.ExecuteReader();
                         while (reader.Read())
                         {
-                            result.Add(new Person()
+                            result.Add(new Pacient()
                             {
                                 Id = (int)reader["Id"],
-                                Username = (string)reader["Username"],
-                                Role = (RoleType)reader["Role"],
                                 BirthDate = (DateTime)reader["BirthDate"],
                                 Name = (string)reader["Name"],
                                 Surname = (string)reader["Surname"],
-                                Password = (string)reader["Password"],
-                                Gender = (string)reader["Gender"],
-                                PhoneNO = (string)reader["PhoneNO"]
+                                Gender = (string)reader["Gender"]
                             });
                         }
                         con.Close();
@@ -249,16 +256,16 @@ namespace LabDS.Models
             catch (Exception ex) { }
             return result;
         }
-        internal static bool Delete(Person person)
+        internal static bool DeletePacient(Pacient pacient)
         {
             try
             {
                 using (SqlConnection con = new SqlConnection(Utils.DB_CONNECTION_STRING))
                 {
-                    using (SqlCommand cmd = new SqlCommand("Delete persons where Id = @id", con))
+                    using (SqlCommand cmd = new SqlCommand("Delete pacients where Id = @id", con))
                     {
                         cmd.CommandType = System.Data.CommandType.Text;
-                        cmd.Parameters.Add(new SqlParameter("id", person.Id));
+                        cmd.Parameters.Add(new SqlParameter("id", pacient.Id));
                         con.Open();
                         return cmd.ExecuteNonQuery() == 1;
                     }

@@ -1,4 +1,5 @@
-﻿using LabDS.Models;
+﻿using LabDS.App_Start;
+using LabDS.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,81 +16,159 @@ namespace LabDS.Controllers
             var person = Person.GetByUsername(username);
             return View(person);
         }
-        // GET: Person
-        public ActionResult Index()
-        {
-            return View();
-        }
 
-        // GET: Person/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: Person/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Person/Create
-        [HttpPost]
-        public ActionResult Create(FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add insert logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Person/Edit/5
+        [HttpGet]
         public ActionResult Edit(int id)
         {
-            return View();
+            if (Utils.IsAdmin(Session))
+            {
+                var person = Person.GetById(id);
+                return View(person);
+            }
+            else
+                return RedirectToAction("Login", "Person");
         }
 
-        // POST: Person/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Edit(int id, Person model)
         {
             try
             {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
+                if (Utils.IsAdmin(Session))
+                {
+                    if (Person.Edit(model))
+                    {
+                        return RedirectToAction("Profile");
+                    }
+                    else
+                        return View(model);
+                }
+                return RedirectToAction("Login", "Person");
             }
             catch
             {
-                return View();
+                return View(model);
             }
         }
 
-        // GET: Person/Delete/5
-        public ActionResult Delete(int id)
+        [HttpGet]
+        public ActionResult UserDetails(int id)
         {
-            return View();
+            if (Utils.IsAdmin(Session))
+            {
+                var person = Person.GetById(id);
+                return View(person);
+            }
+            else
+                return RedirectToAction("Login", "Person");
         }
 
-        // POST: Person/Delete/5
+        public ActionResult ListUsers()
+        {
+            var users = Person.ListUsers();
+            return View(users);
+        }
+
+        [HttpGet]
+        public ActionResult AddUser()
+        {
+            if (Utils.IsAdmin(Session))
+                return View(new Person());
+            else
+                return RedirectToAction("Login", "Person");
+        }
+
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public ActionResult AddUser(Person person)
         {
             try
             {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
+                var dbPerson = Person.GetByUsername(person.Username);
+                if (dbPerson != null)
+                {
+                    ModelState.AddModelError("Username", "Username-i eshte i zene, vendosni nje username tjeter.");
+                    return View(person);
+                }
+                if (Person.Register(person))
+                    return RedirectToAction("ListUsers");
+                else
+                {
+                    ModelState.AddModelError("Username", "Regjistrimi nuk u krye dot.");
+                    return View(person);
+                }
             }
             catch
             {
-                return View();
+                ModelState.AddModelError("Username", "Regjistrimi nuk u krye dot.");
+                return View(person);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult EditUser(int id)
+        {
+            if (Utils.IsAdmin(Session))
+            {
+                var person = Person.GetById(id);
+                return View(person);
+            }
+            else
+                return RedirectToAction("Login", "Person");
+        }
+
+        [HttpPost]
+        public ActionResult EditUser(int id, Person model)
+        {
+            try
+            {
+                if (Utils.IsAdmin(Session))
+                {
+                    if (Person.Edit(model))
+                    {
+                        return RedirectToAction("ListUsers");
+                    }
+                    else
+                        return View(model);
+                }
+                return RedirectToAction("Login", "Person");
+            }
+            catch
+            {
+                return View(model);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult DeleteUser(int id)
+        {
+            if (Utils.IsAdmin(Session))
+            {
+                var person = Person.GetById(id);
+                return View(person);
+            }
+            else
+                return RedirectToAction("Login", "Person");
+        }
+
+        [HttpPost]
+        public ActionResult Delete(int id, Person person)
+        {
+            try
+            {
+                if (Utils.IsAdmin(Session))
+                {
+                    if (Person.Delete(person))
+                    {
+                        return RedirectToAction("ListUsers");
+                    }
+                    else
+                        return View(person);
+                }
+                return RedirectToAction("Login", "Person");
+            }
+            catch
+            {
+                return View(person);
             }
         }
     }

@@ -21,14 +21,39 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     @if (Session["role"].ToString() == "Admin")
-                     {
+                    {
                         <li>@Html.ActionLink("Analysis", "List", "Analysis")</li>
                         <li>@Html.ActionLink("Analysis Category", "List", "AnalysisCategory")</li>
-                        <li>@Html.ActionLink("Users", "List", "User")</li>
-                     }
+                        <li>@Html.ActionLink("Users", "ListUsers", "Admin")</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Pacientet", "ListPacients", "User")</li>
+                    }
                     @*<li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>*@
+        <li>@Html.ActionLink("About", "About", "Home")</li>*@
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    @if (Session["Username"] != null)
+                    {
+                        <li>
+                            @if (Session["role"].ToString() == "Admin")
+                            {
+
+                                @Html.ActionLink("Profile", "Profile", "Admin");
+                            }
+                            else
+                            {
+                                @Html.ActionLink("Profile", "Profile", "Admin");
+                            }
+                        </li>
+                        <li class=" right">@Html.ActionLink("Logout", "Logout", "Person")</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Login", "Login", "Person")</li>
+                    }
                 </ul>
             </div>
         </div>

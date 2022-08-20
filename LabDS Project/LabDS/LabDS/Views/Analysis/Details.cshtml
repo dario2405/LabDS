@@ -34,25 +34,64 @@
             @Html.DisplayFor(model => model.Price)
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Range)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Range)
-        </dd>
-        
-        <dt>
-            @Html.DisplayNameFor(model => model.Unit)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Unit)
-        </dd>
-
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) 
+</p>
+<div>
+    <p>
+        @Html.ActionLink("Shto Parameter", "ModifyListParameters", new { id = Model.Id })
+    </p>
+    <table class="table">
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Analysis
+            </th>
+            <th>
+                Range
+            </th>
+            <th>
+                Unit
+            </th>
+            <th>
+                Value
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model.Parameters)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Analysis.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Range)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Unit)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Value)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "EditParameter", new { id = item.Id }) |
+                    @Html.ActionLink("Details", "ParameterDetails", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "DeleteParameter", new { id = item.Id })
+                </td>
+            </tr>
+        }
+
+
+    </table>
+</div>
+<p>
     @Html.ActionLink("Back to List", "List")
 </p>

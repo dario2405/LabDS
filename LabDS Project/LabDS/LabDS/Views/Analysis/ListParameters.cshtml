@@ -1,0 +1,62 @@
+﻿@model IEnumerable<LabDS.Models.Parameter>
+
+@{
+    ViewBag.Title = "ListParameters";
+}
+
+<h2>ListParameters</h2>
+
+<p>
+    @Html.ActionLink("Shto Parameter", "ModifyListParameters", new { id = Model.ElementAt(0).AnalysisId })
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            Analysis
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Range)
+        </th> 
+        <th>
+            @Html.DisplayNameFor(model => model.Unit)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Value)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Analysis.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Range)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Unit)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Value)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "EditParameter", new { id = item.Id }) |
+                @Html.ActionLink("Details", "ParameterDetails", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "DeleteParameter", new { id = item.Id })
+            </td>
+        </tr>
+    }
+
+
+</table>
+<div>
+    @Html.ActionLink("Analizat", "List")
+</div>

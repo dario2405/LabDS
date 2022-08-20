@@ -1,0 +1,40 @@
+﻿@model LabDS.Models.PacientAnalysis
+
+@{
+    ViewBag.Title = "AddAnalysis";
+}
+
+<h2>AddAnalysis</h2>
+
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>PacientAnalysis</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        <label for="AnalysisId" class="control-label col-md-2">Analiza: </label>
+        <div class="col-md-10">
+            @Html.DropDownListFor(model => model.AnalysisId, new SelectList((List<LabDS.Models.Analysis>)ViewData["Analyzes"], "Id", "Name"), new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.AnalysisId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "ListAnalyzes", new { id = Model.PacientId})
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

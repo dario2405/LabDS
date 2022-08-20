@@ -1,6 +1,7 @@
 ﻿using LabDS.App_Start;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
 
 namespace LabDS.Models
@@ -8,6 +9,7 @@ namespace LabDS.Models
     public class AnalysisCategory
     {
         public int Id { get; set; }
+        [Required]
         public string Name { get; set; }
         internal static AnalysisCategory GetByName(string name)
         {

@@ -1,13 +1,14 @@
-﻿@model LabDS.Models.Person
+﻿@model LabDS.Models.Pacient
 
 @{
-    ViewBag.Title = "Profile";
+    ViewBag.Title = "DeletePacient";
 }
 
-<h2>Profile</h2>
+<h2>DeletePacient</h2>
 
+<h3>Doni te fshihni kete pacient?</h3>
 <div>
-    <h4>Person</h4>
+    <h4>Pacient</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -35,29 +36,13 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Username)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Username)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Password)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Password)
-        </dd>
-
-        <dt>
             @Html.DisplayNameFor(model => model.PhoneNO)
         </dt>
 
         <dd>
             @Html.DisplayFor(model => model.PhoneNO)
         </dd>
-        
+
         <dt>
             @Html.DisplayNameFor(model => model.Gender)
         </dt>
@@ -67,7 +52,13 @@
         </dd>
 
     </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Fshij" class="btn btn-default" /> |
+            @Html.ActionLink("Lista e pacienteve", "ListPacients")
+        </div>
+    }
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-</p>

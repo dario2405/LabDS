@@ -125,6 +125,7 @@
     <Compile Include="Controllers\AnalysisController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\ParameterController.cs" />
     <Compile Include="Controllers\PersonController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
@@ -132,6 +133,10 @@
     </Compile>
     <Compile Include="Models\Analysis.cs" />
     <Compile Include="Models\AnalysisCategory.cs" />
+    <Compile Include="Models\Pacient.cs" />
+    <Compile Include="Models\PacientAnalysis.cs" />
+    <Compile Include="Models\PacientAnalysisParameter.cs" />
+    <Compile Include="Models\Parameter.cs" />
     <Compile Include="Models\Person.cs" />
     <Compile Include="Models\Requests\AnalysisAddRequest.cs" />
     <Compile Include="Models\Requests\LoginRequestModel.cs" />
@@ -188,9 +193,30 @@
     <Content Include="Views\Admin\Profile.cshtml" />
     <Content Include="Views\User\Profile.cshtml" />
     <Content Include="Views\Analysis\List.cshtml" />
+    <Content Include="Views\User\Edit.cshtml" />
+    <Content Include="Views\Admin\Edit.cshtml" />
+    <Content Include="Views\User\ListPacients.cshtml" />
+    <Content Include="Views\User\AddPacient.cshtml" />
+    <Content Include="Views\User\EditPacient.cshtml" />
+    <Content Include="Views\User\DeletePacient.cshtml" />
+    <Content Include="Views\Admin\ListUsers.cshtml" />
+    <Content Include="Views\Admin\AddUser.cshtml" />
+    <Content Include="Views\Admin\EditUser.cshtml" />
+    <Content Include="Views\Admin\DeleteUser.cshtml" />
+    <Content Include="Views\Admin\UserDetails.cshtml" />
+    <Content Include="Views\Analysis\AddParameter.cshtml" />
+    <Content Include="Views\Analysis\ListParameters.cshtml" />
+    <Content Include="Views\Analysis\DeleteParameter.cshtml" />
+    <Content Include="Views\Analysis\EditParameter.cshtml" />
+    <Content Include="Views\Analysis\ParameterDetails.cshtml" />
+    <Content Include="Views\Analysis\ModifyListParameters.cshtml" />
+    <Content Include="Views\User\Insert.cshtml" />
+    <Content Include="Views\User\ListAnalyzes.cshtml" />
+    <Content Include="Views\User\AddAnalysis.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Parameter\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

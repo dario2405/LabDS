@@ -13,7 +13,6 @@ namespace LabDS.Models.Requests
         public int CategoryId { get; set; }
         public AnalysisCategory Category { get; set; }
         public double Price { get; set; }
-        public string Range { get; set; }
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContex)
         {
             return new List<ValidationResult>();

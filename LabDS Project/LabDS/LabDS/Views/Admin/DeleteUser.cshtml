@@ -1,11 +1,12 @@
 ﻿@model LabDS.Models.Person
 
 @{
-    ViewBag.Title = "Profile";
+    ViewBag.Title = "DeleteUser";
 }
 
-<h2>Profile</h2>
+<h2>DeleteUser</h2>
 
+<h3>A doni te fshini kete perdorues?</h3>
 <div>
     <h4>Person</h4>
     <hr />
@@ -57,7 +58,7 @@
         <dd>
             @Html.DisplayFor(model => model.PhoneNO)
         </dd>
-        
+
         <dt>
             @Html.DisplayNameFor(model => model.Gender)
         </dt>
@@ -67,7 +68,13 @@
         </dd>
 
     </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Fshij" class="btn btn-default" /> |
+            @Html.ActionLink("Lista e perdoruesve", "ListUsers")
+        </div>
+    }
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-</p>

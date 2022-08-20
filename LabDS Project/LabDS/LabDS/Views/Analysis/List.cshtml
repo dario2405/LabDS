@@ -7,7 +7,7 @@
 <h2>List</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Shto Analize", "Insert")
 </p>
 <table class="table">
     <tr>
@@ -20,12 +20,7 @@
         <th>
             @Html.DisplayNameFor(model => model.Price)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Range)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Unit)
-        </th>
+       
         <th></th>
     </tr>
 
@@ -40,16 +35,12 @@
         <td>
             @Html.DisplayFor(modelItem => item.Price)
         </td>
+      
         <td>
-            @Html.DisplayFor(modelItem => item.Range)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Unit)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+            @Html.ActionLink("Modifiko", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("Detaje", "Details", new { id=item.Id }) |
+            @Html.ActionLink("Fshij", "Delete", new { id=item.Id }) |
+            @Html.ActionLink("Parametrat", "ListParameters", new { id=item.Id })
         </td>
     </tr>
 }

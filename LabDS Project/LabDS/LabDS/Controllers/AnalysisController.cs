@@ -22,6 +22,7 @@ namespace LabDS.Controllers
         public ActionResult Details(int id)
         {
             var analysis = Analysis.GetById(id);
+            analysis.Parameters = Parameter.ListParameters(id);
             return View(analysis);
         }
 
@@ -54,7 +55,7 @@ namespace LabDS.Controllers
                         return View(model);
                     }
                     if (Analysis.Insert(model))
-                        return RedirectToAction("List");
+                        return RedirectToAction("AddParameter");
                     return View(model);
                 }
                 else
@@ -138,6 +139,175 @@ namespace LabDS.Controllers
             catch
             {
                 return View(model);
+            }
+        }
+        public ActionResult ListParameters(int id)
+        {
+            var parameters = Parameter.ListParameters(id);
+            return View(parameters);
+        }
+
+        [HttpGet]
+        public ActionResult ParameterDetails(int id)
+        {
+            var parameter = Parameter.GetById(id);
+            return View(parameter);
+        }
+
+        [HttpGet]
+        public ActionResult ModifyListParameters(int id)
+        {
+            if (Utils.IsAdmin(Session))
+            {
+                return View(new Parameter()
+                {
+                    AnalysisId = id
+                });
+            }
+            else
+                return RedirectToAction("Login", "Person");
+        }
+
+        [HttpPost]
+        public ActionResult ModifyListParameters(Parameter model, int id)
+        {
+            try
+            {
+                if (Utils.IsAdmin(Session))
+                {
+                    
+                    model.AnalysisId = id;
+                    if (Parameter.AddParameter(model))
+                        return RedirectToAction("ListParameters", new {id = id});
+                    return View(model);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Person");
+                }
+            }
+            catch
+            {
+                return View(model);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult AddParameter()
+        {
+            if (Utils.IsAdmin(Session))
+            {
+                var analysis = Analysis.GetLast();
+                var id = analysis.Id;
+                return View(new Parameter()
+                {
+                    AnalysisId=id,
+                });
+                
+            }
+            else
+                return RedirectToAction("Login", "Person");
+        }
+
+        [HttpPost]
+        public ActionResult AddParameter(Parameter model)
+        {
+            try
+            {
+                if (Utils.IsAdmin(Session))
+                {
+                    var analysis = Analysis.GetLast();
+                    model.AnalysisId = analysis.Id;
+                    if (Parameter.AddParameter(model))
+                        return RedirectToAction("AddParameter");
+                    return View(model);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Person");
+                }
+            }
+            catch
+            {
+                return View(model);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult EditParameter(int id)
+        {
+            if (Utils.IsAdmin(Session))
+            {
+                var parameter = Parameter.GetById(id);
+                return View(parameter);
+            }
+            else
+                return RedirectToAction("Login", "Person");
+
+        }
+
+        [HttpPost]
+        public ActionResult EditParameter(int id, Parameter model)
+        {
+            try
+            {
+                if (Utils.IsAdmin(Session))
+                {
+                    var analysisId = Parameter.GetById(id).AnalysisId;
+                    model.AnalysisId = analysisId;
+                    if (Parameter.Edit(model))
+                    {
+                        return RedirectToAction("ListParameters", new { id = model.AnalysisId });
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("Name", "Modifikimi s'u krye dot.");
+                        return View(model);
+                    }
+                        
+                }
+                return RedirectToAction("Login", "Person");
+            }
+            catch
+            {
+                ModelState.AddModelError("Name", "Modifikimi nuk u krye dot.");
+                return View(model);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult DeleteParameter(int id)
+        {
+            if (Utils.IsAdmin(Session))
+            {
+                var parameter = Parameter.GetById(id);
+                return View(parameter);
+            }
+            else
+                return RedirectToAction("Login", "Person");
+        }
+
+
+        [HttpPost]
+        public ActionResult DeleteParameter(int id, Parameter parameter)
+        {
+            try
+            {
+                var analysisId = Parameter.GetById(id).AnalysisId;
+                if (Utils.IsAdmin(Session))
+                {
+                    if (Parameter.DeleteParameter(parameter))
+                    {
+                        return RedirectToAction("ListParameters", new {id = analysisId});
+                    }
+                    else
+                        return View(parameter);
+                }
+                return RedirectToAction("Login", "Person");
+            }
+            catch
+            {
+                return View(parameter);
             }
         }
     }

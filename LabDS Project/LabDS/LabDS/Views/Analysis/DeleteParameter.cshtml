@@ -1,0 +1,64 @@
+﻿@model LabDS.Models.Parameter
+
+@{
+    ViewBag.Title = "DeleteParameter";
+}
+
+<h2>DeleteParameter</h2>
+
+<h3>A doni te fshini kete parameter?</h3>
+<div>
+    <h4>Parameter</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            Analysis
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Analysis.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Range)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Range)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Unit)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Unit)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Value)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Value)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Fshije" class="btn btn-default" /> |
+            @Html.ActionLink("Lista e Parametrave", "ListParameters", new { id = Model.AnalysisId})
+        </div>
+    }
+</div>
