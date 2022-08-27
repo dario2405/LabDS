@@ -177,7 +177,6 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\AnalysisCategory\List.cshtml" />
     <Content Include="Views\AnalysisCategory\Details.cshtml" />
     <Content Include="Views\AnalysisCategory\Insert.cshtml" />
@@ -213,6 +212,11 @@
     <Content Include="Views\User\Insert.cshtml" />
     <Content Include="Views\User\ListAnalyzes.cshtml" />
     <Content Include="Views\User\AddAnalysis.cshtml" />
+    <Content Include="Views\User\EditAnalysis.cshtml" />
+    <Content Include="Views\User\DeleteAnalysis.cshtml" />
+    <Content Include="Views\User\ListParameters.cshtml" />
+    <Content Include="Views\User\EditParameter.cshtml" />
+    <Content Include="Views\Home\Journal.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

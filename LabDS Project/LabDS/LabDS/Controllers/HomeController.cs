@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LabDS.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,9 +9,10 @@ namespace LabDS.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
+        public ActionResult Journal()
         {
-            return View();
+            var analyzes = PacientAnalysis.Journal();
+            return View(analyzes);
         }
 
         public ActionResult About()

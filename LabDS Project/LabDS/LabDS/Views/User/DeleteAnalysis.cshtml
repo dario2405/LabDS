@@ -1,0 +1,64 @@
+﻿@model LabDS.Models.PacientAnalysis
+
+@{
+    ViewBag.Title = "DeleteAnalysis";
+}
+
+<h2>Fshij Analizen</h2>
+
+<h3>A jeni i sigurt qe doni te fshini kete Analize?</h3>
+<div>
+    <h4>Analiza</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            Pacienti
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Pacient.Name)
+        </dd>
+
+        <dt>
+            Analiza
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            Kategoria e Analizes
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Category.Name)
+        </dd>
+
+        <dt>
+            Cmimi
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+
+        <dt>
+            Data
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreatedOn)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Fshij" class="btn btn-default" /> |
+            @Html.ActionLink("Lista e Analizave", "ListAnalyzes", new { id = Model.PacientId})
+        </div>
+    }
+</div>

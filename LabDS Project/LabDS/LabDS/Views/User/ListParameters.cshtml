@@ -1,0 +1,50 @@
+﻿@model IEnumerable<LabDS.Models.PacientAnalysisParameter>
+
+@{
+    ViewBag.Title = "ListParameters";
+}
+
+<h2>Paarmetrat</h2>
+
+
+<table class="table">
+    <tr>
+        <th>
+            Parameteri
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Range)
+        </th>
+        <th>
+            Njesia
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Value)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Range)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Unit)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Value)
+        </td>
+        <td>
+            @Html.ActionLink("Modifiko", "EditParameter", new { id=item.Id })
+        </td>
+    </tr>
+}
+
+</table>
+<p>
+    @Html.ActionLink("Lista e Analizave", "ListAnalyzes", new { id = Model.ElementAt(0).Analysis.PacientId })
+</p>

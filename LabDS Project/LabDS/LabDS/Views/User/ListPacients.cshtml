@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<LabDS.Models.Pacient>
 
 @{
-    ViewBag.Title = "ListPacients";
+    ViewBag.Title = "Pacientet";
 }
 
-<h2>ListPacients</h2>
+<h2>Pacientet</h2>
 
 <p>
     @Html.ActionLink("Shto Pacient", "AddPacient")
@@ -12,19 +12,19 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Name)
+            Emri
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Surname)
+            Mbiemri
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.BirthDate)
+            Ditelindja
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.PhoneNO)
+            Nr. i telefonit
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Gender)
+            Gjinia
         </th>
         <th></th>
     </tr>
@@ -47,10 +47,10 @@
             @Html.DisplayFor(modelItem => item.Gender)
         </td>
         <td>
-            @Html.ActionLink("Edit", "EditPacient", new { id=item.Id }) |
-            @Html.ActionLink("Details", "DetailsPacient", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "DeletePacient", new { id=item.Id }) |
-            @Html.ActionLink("Analyzes", "ListAnalyzes", new { id = item.Id })
+            @Html.ActionLink("Modifiko", "EditPacient", new { id=item.Id }) |
+            @Html.ActionLink("Detaje", "DetailsPacient", new { id=item.Id }) |
+            @Html.ActionLink("Fshij", "DeletePacient", new { id=item.Id }) |
+            @Html.ActionLink("Analizat", "ListAnalyzes", new { id = item.Id })
         </td>
     </tr>
 }

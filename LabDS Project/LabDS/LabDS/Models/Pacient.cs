@@ -246,7 +246,8 @@ namespace LabDS.Models
                                 BirthDate = (DateTime)reader["BirthDate"],
                                 Name = (string)reader["Name"],
                                 Surname = (string)reader["Surname"],
-                                Gender = (string)reader["Gender"]
+                                Gender = (string)reader["Gender"],
+                                PhoneNO = (string)reader["PhoneNo"]
                             });
                         }
                         con.Close();

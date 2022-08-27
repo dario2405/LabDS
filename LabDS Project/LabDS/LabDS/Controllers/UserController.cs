@@ -197,7 +197,9 @@ namespace LabDS.Controllers
                     model.Price = analysis.Price;
                     model.CategoryId = analysis.CategoryId;
                     PacientAnalysis.Insert(model);
-                    return RedirectToAction("ListPacients", "User");
+                    var lastAnalysis = PacientAnalysis.GetLast();
+                    PacientAnalysisParameter.AddParameter(lastAnalysis);
+                    return RedirectToAction("ListPacients");
                 }
                 else
                     return RedirectToAction("Login", "Person");
@@ -221,8 +223,8 @@ namespace LabDS.Controllers
         [HttpPost]
         public ActionResult AddAnalysis(int id, PacientAnalysis model)
         {
-            try
-            {
+            //try
+            //{
                 if (Utils.IsUser(Session))
                 {
                     var analysis = Analysis.GetById(model.AnalysisId);
@@ -232,15 +234,159 @@ namespace LabDS.Controllers
                     model.Price = analysis.Price;
                     model.CategoryId = analysis.CategoryId;
                     PacientAnalysis.Insert(model);
-                    return RedirectToAction("ListPacients", "User");
+                    var lastAnalysis = PacientAnalysis.GetLast();
+                    PacientAnalysisParameter.AddParameter(lastAnalysis);
+                    return RedirectToAction("ListPacients");
                 }
                 else
                     return RedirectToAction("Login", "Person");
+            //}
+            //catch
+            //{
+            //    return View();
+            //}
+        }
+
+        [HttpGet]
+        public ActionResult EditAnalysis(int id)
+        {
+            if (Utils.IsUser(Session))
+            {
+                var analysis = PacientAnalysis.GetById(id);
+                return View(analysis);
+            }
+            else
+                return RedirectToAction("Login", "Person");
+        }
+
+        [HttpPost]
+        public ActionResult EditAnalysis(int id, PacientAnalysis model)
+        {
+            try
+            {
+                if (Utils.IsUser(Session))
+                {
+                    var analysis = PacientAnalysis.GetById(id);
+                    model.Id = id;
+                    model.AnalysisId = analysis.AnalysisId;
+                    model.PacientId = analysis.PacientId;
+                    model.CategoryId = analysis.CategoryId;
+                    model.Name = analysis.Name;
+                    model.CreatedOn = analysis.CreatedOn;
+
+                    if (PacientAnalysis.EditAnalysis(model))
+                    {
+                        return RedirectToAction("ListAnalyzes");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Modifikimi nuk u krye dot!");
+                        return View(model);
+                    }                        
+                }
+                return RedirectToAction("Login", "Person");
             }
             catch
             {
-                return View();
+                ModelState.AddModelError("", "Modifikimi nuk u krye dot!");
+                return View(model);
             }
+        }
+
+        [HttpGet]
+        public ActionResult DeleteAnalysis(int id)
+        {
+            if (Utils.IsUser(Session))
+            {
+                var analysis = PacientAnalysis.GetById(id);
+                return View(analysis);
+            }
+            else
+                return RedirectToAction("Login", "Person");
+        }
+
+        [HttpPost]
+        public ActionResult DeleteAnalysis(int id, PacientAnalysis model)
+        {
+            try
+            {
+                if (Utils.IsUser(Session))
+                {
+                    int listId = model.PacientId;
+                    if (PacientAnalysis.DeleteAnalysis(model))
+                    {
+                        return RedirectToAction("ListPacients");
+                    }
+                    else 
+                    {
+                        ModelState.AddModelError("", "Fshirja nu u krye dot!");
+                        return View(model);
+                    }
+                        
+                }
+                return RedirectToAction("Login", "Person");
+            }
+            catch
+            {
+                ModelState.AddModelError("", "Fshirja nu u krye dot!");
+                return View(model);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult ListParameters(int id)
+        {
+            if (Utils.IsUser(Session))
+            {
+                var parameters = PacientAnalysisParameter.ListParameters(id);
+                return View(parameters);
+            }
+            else
+                return RedirectToAction("Login", "Person");
+        }
+
+        [HttpGet]
+        public ActionResult EditParameter(int id)
+        {
+            if (Utils.IsUser(Session))
+            {
+                var parameter = PacientAnalysisParameter.GetById(id);
+                return View(parameter);
+            }
+            else
+                return RedirectToAction("Login", "Person");
+        }
+
+        [HttpPost]
+        public ActionResult EditParameter(int id, PacientAnalysisParameter model)
+        {
+            //try
+            //{
+                if (Utils.IsUser(Session))
+                {
+                    var parameter = PacientAnalysisParameter.GetById(id);
+                    model.Name = parameter.Name;
+                    model.PacientAnalysisId = parameter.PacientAnalysisId;
+                    model.Unit = parameter.Unit;
+                    model.Range = parameter.Range;
+
+                    if (PacientAnalysisParameter.EditParameter(model))
+                    {
+                        return RedirectToAction("ListParameters", new { id = model.PacientAnalysisId});
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Modifikimi nuk u krye dot!");
+                        return View(model);
+                    }
+                }
+                return RedirectToAction("Login", "Person");
+            //}
+            //catch
+            //{
+            //    ModelState.AddModelError("", "Modifikimi nuk u krye dot!");
+            //    return View(model);
+            //}
         }
     }
 }
